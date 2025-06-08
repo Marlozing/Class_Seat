@@ -142,7 +142,7 @@ def detect_handwriting_regions(image):
     boxes = sorted(boxes, key=lambda box: (round(box[1] / 10), box[0]))
     return boxes
 
-def recognize_and_visualize(image_path, name_file_path, debug=False):
+def recognize_and_visualize(image_path, name_file_path, output_path="./result", debug=False):
     processor = TrOCRProcessor.from_pretrained("ddobokki/ko-trocr")
     model = VisionEncoderDecoderModel.from_pretrained("ddobokki/ko-trocr")
     model.eval()
@@ -172,8 +172,7 @@ def recognize_and_visualize(image_path, name_file_path, debug=False):
         if debug:
             draw.rectangle([x1, y1, x2, y2], outline="red", width=2)
             draw.text((x1, y1 - 25), corrected_text, fill="blue", font=font)
-    output_excel = os.path.join(os.path.dirname(image_path), "blank.xlsx")
-    write_names_to_excel(output_excel, results)
+    write_names_to_excel(output_path+"/blank.xlsx", results)
     if debug:
         image_pil = image_pil.resize((image_pil.width // 2, image_pil.height // 2))
         image_pil.show()
@@ -186,4 +185,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     copy_excel_to_result("./data/blank.xlsx", args.output)
-    recognize_and_visualize(args.image, "./data/names.txt", debug=args.debug)
+    recognize_and_visualize(args.image, "./data/names.txt", args.output, debug=args.debug)
