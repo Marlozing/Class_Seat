@@ -145,7 +145,12 @@ def detect_handwriting_regions(image):
 def recognize_and_visualize(image_path, name_file_path, output_path="./result", debug=False):
     processor = TrOCRProcessor.from_pretrained("ddobokki/ko-trocr")
     model = VisionEncoderDecoderModel.from_pretrained("ddobokki/ko-trocr")
+    
+    # GPU 사용 가능 여부 확인
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
     model.eval()
+    
     reference_names = load_reference_names(name_file_path)
     image = cv2.imread(image_path)
     if image is None:
