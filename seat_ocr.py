@@ -167,7 +167,7 @@ def recognize_and_visualize(image_path, name_file_path, output_path="./result", 
         if roi.size == 0:
             continue
         roi_pil = Image.fromarray(cv2.cvtColor(roi, cv2.COLOR_BGR2RGB))
-        pixel_values = processor(images=roi_pil, return_tensors="pt").pixel_values
+        pixel_values = processor(images=roi_pil, return_tensors="pt").pixel_values.to(device)
         with torch.no_grad():
             generated_ids = model.generate(pixel_values, max_length=64)
         text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
